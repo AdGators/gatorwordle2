@@ -4,7 +4,14 @@
 
 This project is a clone of the popular game [Wordle](https://www.nytimes.com/games/wordle/index.html).
 
-This is a [Laravel](https://laravel.com/docs/9.x) PHP project that uses SQLite3, [Laravel Jetstream](https://jetstream.laravel.com/2.x/introduction.html), [Inertia JS](https://inertiajs.com/), and [Vue.js](https://vuejs.org/).
+The following frameworks are used: 
+
+- [Laravel 11](https://laravel.com/docs/11.x) (PHP backend)
+- [Vue.js 3](https://vuejs.org/guide/introduction.html) (JS Frontend)
+- [Vuex](https://vuex.vuejs.org/) (Manage state between components in Vue)
+- [Inertia JS](https://inertiajs.com/) (Connects Laravel + Vue)
+- [Laravel Jetstream](https://jetstream.laravel.com/introduction.html) (Starter kit, mostly for auth. Shouldn't need to worry about this.)
+- Database is sqlite3
 
 ## Development Environment
 
