@@ -31,8 +31,9 @@ Inside your development environment:
 2. Install PHP dependencies `composer install`
 3. Install frontend dependencies `npm install`
 4. Create your .env file by copying the example `cp .env.example .env`. Update settings as necessary
-5. Migrate and seed DB `php artisan migrate`
-6. Seed DB `php artisan db:seed`
+5. Set app key `php artisan key:generate`
+6. Migrate DB `php artisan migrate`
+7. Seed DB `php artisan db:seed`
 
 *Note* - open the config file `config/sanctum.php` and verify the domain you are running the site from locally 
 is listed in the `stateful` setting. If it's not, set it in your .env file: `SANCTUM_STATEFUL_DOMAINS=yourdomain`
