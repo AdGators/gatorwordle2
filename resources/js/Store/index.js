@@ -69,7 +69,7 @@ export default createStore({
         },
         decrementCharIndex(state) {
             if (state.charIndex > 0) {  // Prevents going below index 0
-                console.log("Decreasing charIndex:", state.charIndex);
+               // console.log("Decreasing charIndex:", state.charIndex);
                 state.charIndex--;
             }
         },
@@ -100,17 +100,17 @@ export default createStore({
             commit('incrementCharIndex');
         },
         undoLastCharacter({ state, commit }) {
-            console.warn("🔄 undoLastCharacter is triggered");
-            console.error("Backspace pressed!");
+           // console.warn("🔄 undoLastCharacter is triggered");
+            //console.error("Backspace pressed!");
         
             if (state.charIndex > 0) {
                 commit('decrementCharIndex');
                 commit('setCharacter', { rowIndex: state.rowIndex, charIndex: state.charIndex, char: '' });
             } else {
-                console.log("⛔ Backspace blocked at index 0");
+                //console.log("⛔ Backspace blocked at index 0");
             }
         
-            console.log("➡️ After Backspace | charIndex:", state.charIndex);
+            //console.log("➡️ After Backspace | charIndex:", state.charIndex);
         },
         submitGuess({ state, commit, getters }) {
             if(!getters.allCharsEntered) {
