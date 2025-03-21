@@ -1,4 +1,7 @@
-import { createStore } from 'vuex'
+import { createStore } from 'vuex';
+import { reactive } from 'vue';
+import axios from 'axios';
+
 
 const evaluateRow = (row, answer) => {
     let evaluation = []
@@ -40,8 +43,10 @@ const getDefaultState = () => {
             ['Empty', 'Empty', 'Empty', 'Empty', 'Empty'],
         ],
         rowIndex: 0,
-        charIndex: 0
+        charIndex: 0,
+        keyColors: reactive({})
     }
+    
 }
 
 export default createStore({
@@ -51,6 +56,7 @@ export default createStore({
     mutations: {
         resetGame: (state) => {
             Object.assign(state, getDefaultState())
+            state.answer = '';
         },
         setAnswer(state, answer) {
             state.answer = answer
@@ -68,7 +74,9 @@ export default createStore({
             state.charIndex++
         },
         decrementCharIndex(state) {
-            state.charIndex--
+            if (state.charIndex > 0) {  // Prevents going below index 0
+                state.charIndex--;
+            }
         },
         resetCharIndex(state) {
             state.charIndex = 0
@@ -86,37 +94,50 @@ export default createStore({
         },
         allCharsEntered: (state) => {
             return state.charIndex === 5
+        },
+        currentWord: (state) => {
+            return state.gameGrid[state.rowIndex].join('').toLowerCase(); // ✅ New Getter
         }
     },
     actions: {
         submitCharacter({ state, commit, getters }, char) {
-            if(getters.allCharsEntered) {
-                return // don't accept more characters after all have been entered
+            if (getters.allCharsEntered || state.gameGrid[state.rowIndex][state.charIndex] !== '') {
+                return; // Prevents overwriting the same spot
             }
-            commit('setCharacter', { rowIndex: state.rowIndex, charIndex: state.charIndex, char })
-            commit('incrementCharIndex')
+            commit('setCharacter', { rowIndex: state.rowIndex, charIndex: state.charIndex, char });
+            commit('incrementCharIndex');
         },
         undoLastCharacter({ state, commit }) {
-            commit('decrementCharIndex')
-            commit('setCharacter', { rowIndex: state.rowIndex, charIndex: state.charIndex, char: '' })
-        },
-        submitGuess({ state, commit, getters }) {
-            if(!getters.allCharsEntered) {
-                return // can't submit if you haven't filled out all the letters
+            if (state.charIndex > 0) {
+                commit('decrementCharIndex');
+                commit('setCharacter', { rowIndex: state.rowIndex, charIndex: state.charIndex, char: '' });
             }
+        },
+        guessIsValid({ getters }) {
+            return axios.get("/api/words/valid", { params: { answer: getters.currentWord}})
 
-            let evals = evaluateRow(state.gameGrid[state.rowIndex], state.answer)
-            commit('setEvaluation', { evalIndex: state.rowIndex, evals })
-
-            if(evals.every(e => e === 'Correct')) {
-                commit('win') // Every character was correct - you win!
-            } else if(getters.onLastRow) {
-                commit('lose') // Not every character was correct and it was the last guess - you lose :(
+        },
+       submitGuess({ state, commit, getters }) {
+            if (!getters.allCharsEntered) {
+                return; // Can't submit if all letters are not filled
+            }
+        
+            const currentWord = getters.currentWord; // Convert input to lowercase
+        
+        
+            let evals = evaluateRow(state.gameGrid[state.rowIndex], state.answer);
+            commit('setEvaluation', { evalIndex: state.rowIndex, evals });
+                    
+        
+            if (evals.every(e => e === 'Correct')) {
+                commit('win'); // User wins!
+            } else if (getters.onLastRow) {
+                commit('lose'); // Last row reached and incorrect guess
             } else {
-                // Go to the next guess
-                commit('incrementRowIndex')
-                commit('resetCharIndex')
+                commit('incrementRowIndex');
+                commit('resetCharIndex');
             }
         }
+        
     }
 })

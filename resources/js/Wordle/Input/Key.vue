@@ -21,12 +21,24 @@ export default {
             if(this.letter === 'BACKSPACE') {
                 this.undoLastCharacter()
             } else if(this.letter === 'ENTER') {
-                this.submitGuess()
+                this.guessIsValid()
+                    .then(response => {
+                        if(response.data.valid) {
+                            this.submitGuess()
+                        } else {
+                            alert('This is not a word')
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        alert('An error occurred, please check console.')
+                    })
             } else {
                 this.submitCharacter(this.letter)
             }
         },
-        ...mapActions(['submitCharacter', 'undoLastCharacter', 'submitGuess'])
+        ...mapActions(['submitCharacter', 'undoLastCharacter', 'submitGuess', 'guessIsValid']),
     }
 }
 </script>
+
