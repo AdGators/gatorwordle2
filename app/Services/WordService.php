@@ -9,4 +9,6 @@ interface WordService
     public function getAllWords(): Collection;
 
     public function getNewWord(): string;
+
+    public function isWord(string $guess): bool;
 }

@@ -12,6 +12,7 @@
 <script>
 import Key from './Key.vue'
 
+
 export default {
     name: "Keyboard",
     components: {

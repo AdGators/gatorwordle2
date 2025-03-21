@@ -18,4 +18,8 @@ class TextFileWordService implements WordService
     {
         return Str::of($this->getAllWords()->random())->trim()->upper();
     }
+    public function isWord(string $guess) : bool
+    {
+        return $this->getAllWords()->contains($guess);
+    }
 }

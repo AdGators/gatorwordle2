@@ -15,6 +15,7 @@ import Row from './Grid/Row.vue'
 import Keyboard from './Input/Keyboard.vue'
 import axios from 'axios'
 import { mapState, mapMutations } from 'vuex'
+import { router } from '@inertiajs/vue3'
 
 export default {
     name: "Wordle",
@@ -36,6 +37,9 @@ export default {
           if(newVal === 'WIN' || newVal === 'LOSE') {
               this.saveGame()
           }
+      },
+      solution(newVal) {
+        this.setAnswer(newVal)
       }
     },
     mounted() {
@@ -53,6 +57,7 @@ export default {
                 alert(r.data.status === 'WIN' ? '🎉 Congratulations, you won! Your game has been saved.'
                     : '🙁 Sorry, you lost. Your game has been saved. Try again!')
                 this.resetGame()
+                router.reload()
             }).catch(err => {
                 alert('An error occurred saving your game. See the console.')
                 console.log(err)
