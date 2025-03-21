@@ -69,8 +69,7 @@ export default createStore({
         },
         decrementCharIndex(state) {
             if (state.charIndex > 0) {  // Prevents going below index 0
-               // console.log("Decreasing charIndex:", state.charIndex);
-                state.charIndex--;
+                state.charIndex--
             }
         },
         resetCharIndex(state) {
@@ -89,28 +88,24 @@ export default createStore({
         },
         allCharsEntered: (state) => {
             return state.charIndex === 5
+        },
+        currentCellHasChar: (state) => {
+            return state.gameGrid[state.rowIndex][state.charIndex] !== ''
         }
     },
     actions: {
         submitCharacter({ state, commit, getters }, char) {
-            if (getters.allCharsEntered || state.gameGrid[state.rowIndex][state.charIndex] !== '') {
-                return; // Prevents overwriting the same spot
+            if (getters.allCharsEntered || getters.currentCellHasChar) {
+                return // Prevents overwriting the same spot
             }
             commit('setCharacter', { rowIndex: state.rowIndex, charIndex: state.charIndex, char });
             commit('incrementCharIndex');
         },
         undoLastCharacter({ state, commit }) {
-           // console.warn("🔄 undoLastCharacter is triggered");
-            //console.error("Backspace pressed!");
-        
             if (state.charIndex > 0) {
-                commit('decrementCharIndex');
-                commit('setCharacter', { rowIndex: state.rowIndex, charIndex: state.charIndex, char: '' });
-            } else {
-                //console.log("⛔ Backspace blocked at index 0");
+                commit('decrementCharIndex')
+                commit('setCharacter', { rowIndex: state.rowIndex, charIndex: state.charIndex, char: '' })
             }
-        
-            //console.log("➡️ After Backspace | charIndex:", state.charIndex);
         },
         submitGuess({ state, commit, getters }) {
             if(!getters.allCharsEntered) {
